@@ -1,5 +1,9 @@
 services:
-  - type: static_site
+  - type: web
     name: sva-notebooks
+    runtime: python
     buildCommand: pip install nbconvert && jupyter nbconvert --to html *.ipynb && mkdir -p docs && mv *.html docs/
-    staticPublishPath: ./docs
+    startCommand: python -m http.server 8080 --directory docs
+    envVars:
+      - key: PORT
+        value: "8080"
