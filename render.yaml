@@ -1,0 +1,26 @@
+# Render configuration for static site deployment
+
+# This file configures the rendering of Jupyter notebooks to HTML.
+
+version: 1.0
+
+# Source directories
+source:
+  - notebooks/
+
+# Output directory
+target: output/
+
+# Define the rendering process
+render:
+  format: html
+  template: default
+  resources:
+    - css/style.css
+    - js/script.js
+
+# Include custom configurations
+custom:
+  metadata:
+    author: "Your Name"
+    date: "2026-03-21"
