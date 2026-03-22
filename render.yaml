@@ -3,7 +3,7 @@ services:
     name: sva-yolo-flask
     runtime: python
     buildCommand: |
-      pip install -r requirements.txt
+      pip install --only-binary=pydantic-core -r requirements.txt
     startCommand: |
       python app.py
     envVars:
