@@ -1,9 +1,11 @@
 services:
   - type: web
-    name: sva-notebooks
+    name: sva-yolo-flask
     runtime: python
-    buildCommand: pip install nbconvert && jupyter nbconvert --to html *.ipynb && mkdir -p docs && mv *.html docs/
-    startCommand: python -m http.server 8080 --directory docs
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: |
+      python app.py
     envVars:
       - key: PORT
-        value: "8080"
+        value: "5000"

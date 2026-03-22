@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera to Audio YOLO</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 16px; color: #222; }
+    .video-container { max-width: 720px; margin-bottom: 16px; }
+    video, canvas { width: 100%; border: 1px solid #ccc; }
+    button { background: #0062cc; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 8px; }
+    button:hover { background: #004a9f; }
+    .status { margin-top: 12px; font-size: 1rem; }
+    .audio-link { margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>YOLO Object Detection + Audio Link</h1>
+  <p>Camera input from webcam. Click <strong>Detect and Voice</strong> to trigger YOLO object detection and generate an audio URL.</p>
+
+  <div class="video-container">
+    <img id="cameraFrame" src="" alt="Camera stream" />
+  </div>
+
+  <button id="detectBtn">Detect and Voice</button>
+  <div class="status" id="status">Ready</div>
+  <div class="audio-link" id="audioLink"></div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const audioLinkEl = document.getElementById('audioLink');
+    const cameraFrame = document.getElementById('cameraFrame');
+
+    cameraFrame.src = '/video_feed';
+
+    async function detect() {
+      statusEl.textContent = 'Running detection...';
+      audioLinkEl.innerHTML = '';
+
+      try {
+        const response = await fetch('/detect', { method: 'POST' });
+        const data = await response.json();
+
+        if (data.error) {
+          statusEl.textContent = 'Error: ' + data.error;
+          return;
+        }
+
+        if (data.detected_objects && data.detected_objects.length > 0) {
+          statusEl.textContent = 'Detected: ' + data.detected_objects.join(', ');
+          audioLinkEl.innerHTML = `<a href="${data.audio_url}" target="_blank">Play audio description</a>`;
+        } else {
+          statusEl.textContent = 'No objects detected.';
+        }
+      } catch (err) {
+        statusEl.textContent = 'Request failed: ' + err.message;
+      }
+    }
+
+    document.getElementById('detectBtn').addEventListener('click', detect);
+  </script>
+</body>
+</html>
